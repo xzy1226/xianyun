@@ -19,11 +19,11 @@
       <!-- 登录/用户信息 -->
       <el-row type="flex" align="middle">
         <!-- 如果用户存在则展示用户信息，用户数据来自store -->
-        <el-dropdown v-if="false">
+        <el-dropdown v-if="userInfo.token">
           <el-row type="flex" align="middle" class="el-dropdown-link">
             <nuxt-link to="#">
-              <img src="http://157.122.54.189:9093/images/pic_sea.jpeg" />
-              用户名
+              <img :src="$axios.defaults.baseURL + userInfo.user.defaultAvatar" />
+              {{userInfo.user.nickname}}
             </nuxt-link>
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-row>
@@ -45,10 +45,23 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
+  computed: {
+    ...mapState(["userInfo"])
+  },
   methods: {
     // 用户退出
-    handleLogout() {}
+    handleLogout() {
+      const { commit } = this.$store;
+      commit("clearUserInfo");
+      //提示信息
+      this.$message({
+        message: "退出成功",
+        type: "success",
+        duration: 1000
+      });
+    }
   }
 };
 </script>
