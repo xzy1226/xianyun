@@ -64,17 +64,18 @@ export default {
   components: { searchForm },
   data() {
     return {
-      sales: [
-
-      ]
+      sales: []
     };
   },
-  mounted() {
-    this.$axios('/airs/sale').then(res=>{
-      const {data}=res.data;
+  methods: {
+    //获取推荐机票
+    async getAirSale(){
+      const {data}= (await this.$store.dispatch('getAirSale')).data;
       this.sales=data;
-      console.log(data);
-    })
+    }
+  },
+  mounted() {
+    this.getAirSale()
   },
 };
 </script>
