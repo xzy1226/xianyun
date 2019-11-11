@@ -63,63 +63,62 @@ export default {
   },
   methods: {
     // 发送验证码
-    handleSendCaptcha() {
+    async handleSendCaptcha() {
       // 验证手机号是否为空
-      if(!this.form.username){
-        return this.$confirm('手机号码不能为空', '提示', {
-          confirmButtonText: '确定',
-          showCancelButton: false,
-          type: 'warning'
+      if (!this.form.username) {
+        //提示信息
+        return this.$message.warning({
+          message: "手机号码不能为空",
+          duration: 1000
         })
       }
       // 验证手机号码是否为11位数字
-      if(this.form.username.length!=11){
-        return this.$confirm('请输入11位手机号码', '提示', {
-          confirmButtonText: '确定',
-          showCancelButton: false,
-          type: 'warning'
+      if (this.form.username.length != 11) {
+        
+        return this.$message.warning({
+          message: "请输入11位手机号码",
+          duration: 1000
         })
       }
       // 发送
-      this.$store.dispatch('validateCaptcha',{tel:this.form.username})
-        .then(res=>{
-          const {code}=res.data;
-          //弹出框
-          this.$confirm(`手机验证码为${code}`, '提示', {
-            confirmButtonText: '确定',
-            showCancelButton: false,
-            type: 'warning'
-          })
-      })
+      const res = await this.$store.dispatch("validateCaptcha", {
+        tel: this.form.username
+      });
+      const { code } = res.data;
+      //弹出框
+      this.$confirm(`手机验证码为${code}`, "提示", {
+        confirmButtonText: "确定",
+        showCancelButton: false,
+        type: "warning"
+      });
     },
 
     // 注册
-    handleRegSubmit() {
+    async handleRegSubmit() {
       console.log(this.form);
       //验证数据
-      this.$refs["form"].validate(valid => {
-        const {checkPassword,...data}=this.form;
+      const valid = await this.$refs["form"].validate();
+      //解构出data数据
+      const { checkPassword, ...data } = this.form;
+
+      try {
         // valia 为true ，执行后面代码
-        valid &&
-          this.$store.dispatch("register", data).then(res => {
-            // 返回数据存在
-            if (res) {
-              //提示信息
-              this.$message({
-                message: "登录成功",
-                type: "success",
-                duration: 1000
-              })
-              //延时跳转
-              const timer = setTimeout(() => {
-                //清除定时器
-                clearTimeout(timer);
-                //跳转到首页
-                this.$router.replace("/");
-              }, 1000)
-            }
-          })
-      })
+        valid && (await this.$store.dispatch("register", data));
+
+        //提示信息
+        this.$message.success({
+          message: "注册成功",
+          duration: 1000
+        });
+
+        //延时跳转
+        const timer = setTimeout(() => {
+          //清除定时器
+          clearTimeout(timer);
+          //跳转到首页
+          this.$router.replace("/");
+        }, 1000);
+      } catch (e) {}
     }
   }
 };

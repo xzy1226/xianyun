@@ -54,11 +54,10 @@ export default {
     // 用户退出
     handleLogout() {
       const { commit } = this.$store;
-      commit("clearUserInfo");
+      commit("setUserInfo",{token: '',user: {}});
       //提示信息
-      this.$message({
+      this.$message.success({
         message: "退出成功",
-        type: "success",
         duration: 1000
       });
     }

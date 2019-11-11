@@ -46,29 +46,28 @@ export default {
   },
   methods: {
     // 提交登录
-    handleLoginSubmit() {
+    async handleLoginSubmit() {
       //验证表单
-      this.$refs["form"].validate(valid => {
+      const valid = await this.$refs["form"].validate();
+
+      try {
         // valid为true, 执行后面代码
-        valid &&
-          this.$store.dispatch("login", this.form).then(res => {
-            if (res) {
-              //提示信息
-              this.$message({
-                message: "登录成功",
-                type: "success",
-                duration: 1000
-              });
-              //延时跳转
-              const timer=setTimeout(() => {
-                //清除定时器
-                clearTimeout(timer)
-                //跳转到首页
-                this.$router.replace('/')
-              }, 1000);
-            }
-          });
-      });
+        valid && await this.$store.dispatch("login", this.form);
+
+        //  提示信息
+        this.$message.success({
+          message: "登录成功",
+          duration: 1000
+        });
+
+        //延时跳转
+        const timer = setTimeout(() => {
+          //清除定时器
+          clearTimeout(timer);
+          //跳转到首页
+          this.$router.replace("/");
+        }, 1000);
+      } catch (err) {}
     }
   }
 };

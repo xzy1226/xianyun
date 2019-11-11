@@ -5,14 +5,15 @@ export default {
     const res=await this.$axios.post("/accounts/login", data);
     // 提交数据
     commit('setUserInfo',res.data);
-    return res.data;
+    return res
   },
+  
   //注册
   async register({commit},data){
     //发送请求
     const res=await this.$axios.post("/accounts/register",data);
+    // 提交数据
     commit('setUserInfo',res.data);
-    return res.data;
   },
 
   //验证手机号码
