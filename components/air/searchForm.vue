@@ -92,6 +92,8 @@ export default {
       if (arr.length > 0) {
         this.form.departCity = arr[0].value;
         this.form.departCode = arr[0].sort;
+      }else if(!arr.length){
+        this.form.departCode = '';
       }
       cb(arr);
     },
@@ -100,10 +102,13 @@ export default {
     // value 是选中的值，cb是回调函数，接收要展示的列表
     async queryDestSearch(value, cb) {
       const arr = await this.querySearchAsync(value);
+      console.log(arr);
       // 默认选择下拉列表第1项
       if (arr.length > 0) {
         this.form.destCity = arr[0].value;
         this.form.destCode = arr[0].sort;
+      } else if(!arr.length){
+        this.form.destCode = '';
       }
       cb(arr);
     },
@@ -120,10 +125,7 @@ export default {
         }
       };
       // 发送请求 查询城市
-      const { data } = (await this.$store.dispatch(
-        "getSearchCity",
-        porps
-      )).data;
+      const { data } = (await this.$store.dispatch("getSearchCity",porps)).data;
       // 下拉提示列表必须要有value字段
       const arr = data.map(el => {
         return {
@@ -168,16 +170,24 @@ export default {
           value: this.form.departCity,
           message: "请选择出发城市"
         },
+        departCode: {
+          value: this.form.departCode,
+          message: "你选择的出发城市不存在"
+        },
         dest: {
           value: this.form.destCity,
           message: "请选择到达城市"
+        },
+        destCode: {
+          value: this.form.destCode,
+          message: "你选择的到达城市不存在"
         },
         departDate: {
           value: this.form.departDate,
           message: "请选择出发时间"
         }
       };
-
+      console.log(this.form.destCode);
       let valid = true; // 表单验证结果
 
       // 遍历验证规则
