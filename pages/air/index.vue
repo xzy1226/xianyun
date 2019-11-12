@@ -67,15 +67,9 @@ export default {
       sales: []
     };
   },
-  methods: {
-    //获取推荐机票
-    async getAirSale(){
-      const {data}= (await this.$store.dispatch('getAirSale')).data;
-      this.sales=data;
-    }
-  },
-  mounted() {
-    this.getAirSale()
+  async mounted() {
+    const {data}= (await this.$store.dispatch('getAirSale')).data;
+    this.sales=data;
   },
 };
 </script>
