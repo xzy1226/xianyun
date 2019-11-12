@@ -30,5 +30,10 @@ export default {
   // 查询实时机票城市
   async getSearchCity({commit},data){
     return await this.$axios("/airs/city",data)
+  },
+
+  // 获取机票列表
+  async getAirs({commit},data){
+    return await this.$axios('/airs',data)
   }
 }

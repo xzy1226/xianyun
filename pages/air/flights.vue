@@ -15,7 +15,7 @@
                 
                 <!-- 航班信息 -->
                 <div>
-                    <FlightsItem />
+                    <FlightsItem v-for="(item,index) in flightsData.flights" :key="index" :data="item" />
                 </div>
             </div>
 
@@ -35,10 +35,17 @@ import FlightsItem from '@/components/air/flightsItem';
 export default {
   components: {FlightsListHead,FlightsItem},
     data(){
-        return {
-            
+        return { 
+            flightsData:{}
         }
-    }
+    },
+    async mounted() {
+      const props={
+        params: this.$route.query
+      }
+      this.flightsData=(await this.$store.dispatch('getAirs',props)).data
+      console.log(this.flightsData);
+    },
 }
 </script>
 
