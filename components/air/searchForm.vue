@@ -217,6 +217,12 @@ export default {
       // valid 为false，则不执行后面代码
       if (!valid) return;
 
+      // 将搜索信息存储到本地
+      let airs=JSON.parse(localStorage.getItem('airs'))||[];
+      console.log(airs);
+      airs.push(this.form);
+      localStorage.setItem('airs',JSON.stringify(airs));
+
       // 跳转页面
       this.$router.push({
         path: "/air/flights",
