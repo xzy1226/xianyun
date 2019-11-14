@@ -23,7 +23,7 @@
         <div class="history">
             <h5>历史查询</h5>
             <nuxt-link :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
-             v-for="(item, index) in airsLog" :key="index"
+             v-for="(item, index) in $store.state.airsHistory" :key="index"
              @click='setData'
             >
                 <el-row type="flex" 
@@ -43,11 +43,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-      airsLog: []
-    }
-  },
   watch: {
     $route(){
       this.setData()
@@ -58,10 +53,6 @@ export default {
       // 告诉父组件url发生变化，要刷新页面了
       this.$emit('refreshUrl')
     }
-  },
-  mounted() {
-    // 获取本地存储中用户搜索的信息
-    this.airsLog=JSON.parse(localStorage.getItem('airs'))
   },
 }
 </script>
