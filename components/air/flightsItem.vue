@@ -39,7 +39,7 @@
             </el-col>
             <el-col :span="5" class="price">￥{{item.par_price}}</el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">选定</el-button>
+              <el-button type="warning" size="mini" @click="toOrder(index)">选定</el-button>
               <p>剩余：{{item.discount}}</p>
             </el-col>
           </el-row>
@@ -81,6 +81,18 @@ export default {
       const mm=distime%60;//计算相差小时后余下的分钟数
 
       return `${h}时${mm}分`
+    }
+  },
+  methods: {
+    toOrder(index){
+      // 跳转页面
+      this.$router.push({
+        path: "/air/order",
+        query: {
+          id: this.data.id,
+          seat_xid: this.data.seat_infos[index].seat_xid
+        }
+      });
     }
   },
 };

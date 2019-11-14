@@ -34,7 +34,7 @@
             <!-- 侧边栏 -->
             <div class="aside">
                 <!-- 侧边栏组件 -->
-                <FlightsAside @refreshUrl='getflightsData'/>
+                <FlightsAside @refreshUrl='getFlightsData'/>
             </div>
         </el-row>
     </section>
@@ -57,18 +57,31 @@ export default {
               info: {},
               options: {}
             },   
-            flightsData: {},  // 航班总数据
-            dataList: [],     // 当前页航班数据列表
+            flightsData: {
+              flights: [],
+              info: {},
+              options: {}
+            },  // 航班总数据
+            // dataList: [],     // 当前页航班数据列表
             pageIndex: 1,     // 当前页码
             pageSize: 5       // 当前页数
         }
     },
     mounted() {
-      this.getflightsData()
+      this.getFlightsData()
+    },
+    computed: {
+      // 当前页航班数据列表
+      dataList(){
+        // 处理分页
+        const start=(this.pageIndex-1)*this.pageSize;
+        const end=start+this.pageSize;
+        return this.flightsData.flights.slice(start,end);
+      }
     },
     methods: {
       // 发送请求，获取返回的航班信息
-      async getflightsData(){
+      async getFlightsData(){
         // 设置传参数据
         const props={
           params: this.$route.query
@@ -78,31 +91,21 @@ export default {
         this.flightsData=data
         this.cacheFlightsData={...data}
 
-        this.setDataList()
       },
       // 设置当前页的数量
       setDataList(arr){
         // 是否有筛选选项
-        if (arr) {
           this.pageIndex=1;
           this.flightsData.flights=arr;
           this.flightsData.total=arr.length;
-        }
-
-        // 处理分页
-        const start=(this.pageIndex-1)*this.pageSize;
-        const end=start+this.pageSize;
-        this.dataList=this.flightsData.flights.slice(start,end);
       },
       // 改变每页页数
       handleSizeChange(val) {
         this.pageSize=val;
-        this.setDataList()
       },
       // 改变当前页
       handleCurrentChange(val) {
         this.pageIndex=val;
-        this.setDataList()
       }
     },
 }
