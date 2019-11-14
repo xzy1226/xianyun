@@ -24,7 +24,6 @@
             <h5>历史查询</h5>
             <nuxt-link :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
              v-for="(item, index) in $store.state.airsHistory" :key="index"
-             @click='setData'
             >
                 <el-row type="flex" 
                 justify="space-between" 
@@ -43,17 +42,6 @@
 
 <script>
 export default {
-  watch: {
-    $route(){
-      this.setData()
-    }
-  },
-  methods: {
-    setData(){
-      // 告诉父组件url发生变化，要刷新页面了
-      this.$emit('refreshUrl')
-    }
-  },
 }
 </script>
 
