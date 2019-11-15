@@ -55,5 +55,15 @@ export default {
         Authorization: `Bearer ${ token || 'NO TOKEN'}`
       }
     })
+  },
+
+  // 获取订单详情
+  async getAirOrders({commit},data){
+    const {id,token}=data
+    return await this.$axios(`/airorders/${id}`,{
+      headers: {
+        Authorization: `Bearer ${ token || 'NO TOKEN'}`
+      }
+    })
   }
 }
