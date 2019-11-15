@@ -32,6 +32,7 @@
       筛选：
       <el-button type="primary" round plain size="mini" @click="handleFiltersCancel">撤销</el-button>
     </div>
+    <input type="hidden" v-model="handleFilter">
   </div>
 </template>
 
@@ -58,12 +59,12 @@ export default {
       airSize: "" // 机型大小
     };
   },
-  methods: {
+  computed: {
     // 筛选数据
-    handleScreening(){
+    handleFilter(){
       let arr=this.data.flights;
       // 筛选机场
-      if(this.airport)arr=arr.filter(el=>el.org_airport_name==this.airport);
+      if(this.airport) arr=arr.filter(el=>el.org_airport_name==this.airport);
       
       // 筛选出发时间
       if (this.flightTimes) {
@@ -79,34 +80,34 @@ export default {
       // 筛选机型
       if(this.airSize) arr=arr.filter(el=>el.plane_size==this.airSize);
       
+      // 向父组件传参
       this.$emit('setDataList',arr)
-    },
-    
+
+      return ''
+    }
+  },
+  methods: {
     // 选择机场时候触发
     handleAirport(value) {
       this.airport=value;
-      this.handleScreening()
     },
 
     // 选择出发时间时候触发
     handleFlightTimes(value) {
       this.flightIndex=value;
       this.flightTimes=this.data.options.flightTimes[value];
-      this.handleScreening()
 
     },
 
     // 选择航空公司时候触发
     handleCompany(value) {
       this.company=value;
-      this.handleScreening()
 
     },
 
     // 选择机型时候触发
     handleAirSize(value) {
       this.airSize=value;
-      this.handleScreening()
 
     },
 
@@ -116,8 +117,6 @@ export default {
       this.flightIndex= ""
       this.company= ""
       this.airSize= ""
-
-      this.handleScreening()
     }
   }
 };
