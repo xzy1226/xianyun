@@ -11,5 +11,12 @@ export default {
   // 更新用户查询机票数据
   setAirsHistory(state,data){
     state.airsHistory.unshift(data)
+  },
+
+  // 更新订单总价
+  setAllPrice(state,data){
+    const {price,len}=data;
+    state.allPrice=price;
+    state.usersLen=len
   }
 }

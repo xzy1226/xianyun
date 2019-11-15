@@ -65,7 +65,8 @@ export default {
           //清除定时器
           clearTimeout(timer);
           //跳转到首页
-          this.$router.replace("/");
+          // this.$router.replace("/");
+          this.$router.back()
         }, 1000);
       } catch (err) {}
     }

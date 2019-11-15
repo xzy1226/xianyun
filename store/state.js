@@ -10,6 +10,8 @@ export default ()=>{
       user: {}
     },
     
-    airsHistory: []  // 用户查询机票历史
+    airsHistory: [],  // 用户查询机票历史
+    allPrice: 0,      // 订单总价
+    usersLen: 1       // 乘客数量
   }
 }

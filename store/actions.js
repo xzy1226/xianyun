@@ -35,5 +35,25 @@ export default {
   // 获取机票列表
   async getAirs({commit},data){
     return await this.$axios('/airs',data)
+  },
+
+  // 获取选择机票
+  async getChooseAirs({commit},data){
+    const {id,seat_xid}=data
+    return await this.$axios(`/airs/${id}`,{
+      params: {
+        seat_xid
+      }
+    })
+  },
+
+  // 提交机票表单
+  async PostAirOrders({commit},data){
+    const {token,orderData}=data
+    return await this.$axios.post('/airorders',orderData,{
+      headers: {
+        Authorization: `Bearer ${ token || 'NO TOKEN'}`
+      }
+    })
   }
 }
