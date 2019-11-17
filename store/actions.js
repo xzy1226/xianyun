@@ -65,5 +65,19 @@ export default {
         Authorization: `Bearer ${ token || 'NO TOKEN'}`
       }
     })
-  }
+  },
+
+  // 查询付款状态
+  async checkPay({commit},res){
+    const {data,token}=res
+    return this.$axios.post('/airorders/checkpay',data,{
+      headers: {
+        Authorization: `Bearer ${ token || 'NO TOKEN'}`
+      }
+    })
+  },
+
+
+
+  //
 }
