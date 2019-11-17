@@ -82,5 +82,8 @@ export default {
     return this.$axios('/posts/cities')
   },
 
-  //
+  //  获取文章列表
+  async getPostList({commit},data){
+    return this.$axios('/posts',data)
+  }
 }
