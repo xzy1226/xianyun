@@ -77,7 +77,10 @@ export default {
     })
   },
 
-
+  // 获取城市菜单列表
+  async getPostCity({commit}){
+    return this.$axios('/posts/cities')
+  },
 
   //
 }
