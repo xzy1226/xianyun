@@ -1,6 +1,6 @@
 <template>
   <section class="container">
-    <el-row type="flex" align="middle" justify="space-between">
+    <el-row type="flex"  justify="space-between">
       <div class="main">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/post' }">旅游攻略</el-breadcrumb-item>
@@ -44,19 +44,23 @@ import DetailAside from "@/components/post/detailAside";
 import DetailComments from '@/components/post/detailComments';
 import moment from "moment";
 export default {
-  components: { DetailAside },
+  components: { DetailAside ,DetailComments},
   data() {
     return {
-      post: {}
+      // 文章详情数据
+      post: {
+        comments: []    
+      }
     };
   },
   async mounted() {
+    // 获取文章详情数据
     const { id } = this.$route.query;
     const { data } = await this.$store.dispatch("getPostDetail", id);
-    console.log(data);
     this.post = data
   },
   filters: {
+    // 过滤时间格式
     formatTime(val) {
       return moment(val).format("YYYY-MM-DD hh:mm");
     }

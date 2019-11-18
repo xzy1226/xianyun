@@ -92,5 +92,8 @@ export default {
     return this.$axios('/posts/'+data)
   },
 
-  //  
+  // 获取文章收藏列表
+  async getPostRecommend({commit}){
+    return this.$axios('/posts/recommend')
+  }
 }
