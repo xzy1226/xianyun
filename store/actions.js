@@ -85,5 +85,12 @@ export default {
   //  获取文章列表
   async getPostList({commit},data){
     return this.$axios('/posts',data)
-  }
+  },
+
+  // 获取文章详情数据
+  async getPostDetail({commit},data){
+    return this.$axios('/posts/'+data)
+  },
+
+  //  
 }
