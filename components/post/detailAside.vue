@@ -2,7 +2,7 @@
   <div class="aside">
     <h2 class="aside-title">相关攻略</h2>
     <div class="recommend-list">
-      <nuxt-link to="/post/detail" class="recommend-item" 
+      <nuxt-link :to="`/post/detail?id=${item.id}`" class="recommend-item" 
       v-for="(item, index) in recommendList" :key="index">
         <img :src="item.images[0]" alt="" class="post-cover">
         <div class="post-text">
@@ -73,6 +73,7 @@ export default {
             width: 100%;
             font-size: 14px;
             line-height: 1.5em;
+            // 多行省略
             display: -webkit-box;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 2;
