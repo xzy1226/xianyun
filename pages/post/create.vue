@@ -31,24 +31,24 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">立即创建</el-button>
+            <el-button type="primary" @click="handleSubmit">立即创建</el-button>
             <span class="submit-aside">
               或者
-              <a href="javascript:;">保存到草稿箱</a>
+              <a href="javascript:;" @click="handleDaveDraft">保存到草稿箱</a>
             </span>
           </el-form-item>
         </el-form>
       </div>
       <aside>
         <div class="draft-box">
-          <h4>草稿箱（1）</h4>
+          <h4>草稿箱（{{draftBox.length}}）</h4>
           <div class="draft-list">
-            <div class="draft-item">
-              <div class="draft-post-title">
-                13232
+            <div class="draft-item" v-for="(item, index) in draftBox" :key="index">
+              <div class="draft-post-title" @click="handleEditDraft(item)">
+                {{item.title}}
                 <i class="el-icon-edit"></i>
               </div>
-              <p>2019-11-19</p>
+              <p>{{item.date | formatTime}}</p>
             </div>
           </div>
         </div>
@@ -64,7 +64,8 @@ export default {
       form: {
         title: "",
         content: "",
-        city: ""
+        city: "",
+        date: +new Date()
       },
       //富文本编辑器 配置
       customToolbar: [
@@ -76,9 +77,37 @@ export default {
   },
   methods: {
     // 提交
-    onSubmit() {
-      console.log(this.form);
+    async handleSubmit() {
+      // 获取token
+      const {userInfo: {token}}=this.$store.state
+      // 要发送请求的参数
+      const {...data}=this.form
+      // 删除不用的参数-时间
+      delete data.date
+      
+      // 发送请求，得到返回结果
+      const {data: {message}}=await this.$store.dispatch('postAddPost',{data,token})
+      console.log(message);
+      //  提示信息
+      this.$message.success(message);
+      // 从草稿箱中移除
+      this.$store.commit('removeDraftBox',this.form)
+      // 清空数据
+      this.form={}
     },
+
+    // 保存到草稿箱
+    handleDaveDraft(){
+      this.$store.commit('setDraftBox',this.form)
+      this.form={}
+    },
+
+    // 点击草稿箱，渲染数据到编辑界面
+    handleEditDraft(data){
+      // data 要重新拷贝一份，不然会双向绑定 draftBox
+      this.form={...data}
+    },
+
     // 在富文本编辑器中添加图片
     async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
       //将图片转成二进制
@@ -98,7 +127,6 @@ export default {
       const arr = await this.querySearchAsync(value);
       // 默认选择下拉列表第1项
       if (arr.length > 0) this.form.city = arr[0].value;
-
       cb(arr);
     },
 
@@ -114,10 +142,7 @@ export default {
         }
       };
       // 发送请求 查询城市
-      const { data } = (await this.$store.dispatch(
-        "getSearchCity",
-        porps
-      )).data;
+      const { data } = (await this.$store.dispatch("getSearchCity",porps)).data;
       // 下拉提示列表必须要有value字段
       const arr = data.map(el => {
         return {
@@ -130,6 +155,13 @@ export default {
     // 选择下拉列表的某项
     handleCitySelect(item) {
       this.form.city = item.value;
+    }
+  },
+  computed: {
+    draftBox(){
+      const arr=this.$store.state.draftBox
+      // const arr1=Object.assign({},arr);
+      return JSON.parse(JSON.stringify(arr))
     }
   }
 };

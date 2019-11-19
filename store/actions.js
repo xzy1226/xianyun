@@ -135,5 +135,15 @@ export default {
   // 上传图片
   async postUpload({commit},data){
     return this.$axios.post('/upload',data)
-  }
+  },
+
+  // 新增文章
+  async postAddPost({commit},res){
+    const {data,token}=res
+    return this.$axios.post('/posts',data,{
+      headers: {
+        Authorization: `Bearer ${ token || 'NO TOKEN'}`
+      }
+    })
+  },
 }
