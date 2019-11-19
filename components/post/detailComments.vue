@@ -74,7 +74,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import FloorComment from "@/components/post/floorComment"
 
 export default {
@@ -191,7 +190,7 @@ export default {
       this.tag.name='';
       this.follow=''
     },
-    
+
     //统计子评论数，通过递归查询
     getParentLen(i,item){
       return item.follow ? this.getParentLen(i+1,item.parent) : i;
@@ -207,12 +206,6 @@ export default {
   mounted() {
     this.handleGetComments();
   },
-  filters: {
-    // 过滤时间格式
-    formatTime(val) {
-      return moment(val).format("YYYY-MM-DD hh:mm");
-    }
-  }
 };
 </script>
 

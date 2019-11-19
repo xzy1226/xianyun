@@ -43,7 +43,6 @@
 <script>
 import DetailAside from "@/components/post/detailAside";
 import DetailComments from "@/components/post/detailComments";
-import moment from "moment";
 
 export default {
   components: { DetailAside, DetailComments },
@@ -91,12 +90,6 @@ export default {
       } catch (e) {}
     }
   },
-  filters: {
-    // 过滤时间格式
-    formatTime(val) {
-      return moment(val).format("YYYY-MM-DD hh:mm");
-    }
-  }
 };
 </script>
  

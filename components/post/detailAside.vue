@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import moment from "moment";
 
 export default {
   data() {
@@ -27,11 +26,6 @@ export default {
     // 获取收藏文章列表数据
     const {data}=(await this.$store.dispatch('getPostRecommend')).data
     this.recommendList=data;
-  },
-  filters: {
-    formatTime(val) {
-      return moment(val).format("YYYY-MM-DD hh:mm");
-    }
   }
 }
 </script>
