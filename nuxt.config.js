@@ -34,7 +34,8 @@ export default {
     '@/plugins/element-ui',
     { src: '@/plugins/localStorage', ssr: false },
     '@/plugins/axios', // 调用插件
-    '@/plugins/filters'
+    '@/plugins/filters',   // 全局过滤器
+    {src: '@/plugins/vueEditor', ssr: false}  // 富文本编辑器
   ],
   /*
   ** Nuxt.js dev-modules
