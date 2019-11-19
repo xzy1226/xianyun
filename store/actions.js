@@ -95,5 +95,40 @@ export default {
   // 获取文章收藏列表
   async getPostRecommend({commit}){
     return this.$axios('/posts/recommend')
+  },
+
+  // 点赞文章
+  async getLikePost({commit},data){
+    const {id,token}=data
+    return this.$axios('/posts/like?id='+id,{
+      headers: {
+        Authorization: `Bearer ${ token || 'NO TOKEN'}`
+      }
+    })
+  },
+
+  // 收藏文章
+  async getStarPost({commit},data){
+    const {id,token}=data
+    return this.$axios('/posts/star?id='+id,{
+      headers: {
+        Authorization: `Bearer ${ token || 'NO TOKEN'}`
+      }
+    })
+  },
+
+  // 获取文章评论
+  async getPostComments({commit},data){
+    return this.$axios('/posts/comments',data)
+  },
+
+  // 提交文章评论
+  async postPostComments({commit},res){
+    const {data,token}=res
+    return this.$axios.post('/comments',data,{
+      headers: {
+        Authorization: `Bearer ${ token || 'NO TOKEN'}`
+      }
+    })
   }
 }
