@@ -130,5 +130,10 @@ export default {
         Authorization: `Bearer ${ token || 'NO TOKEN'}`
       }
     })
+  },
+
+  // 上传图片
+  async postUpload({commit},data){
+    return this.$axios.post('/upload',data)
   }
 }
