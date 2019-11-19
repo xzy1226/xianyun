@@ -29,7 +29,11 @@
     </el-row>
 
     <!-- 评论列表 -->
-    <div class="cmt-list">
+    <div class="no-comments" v-if="comments.length==0">
+      暂无评论，赶紧抢占沙发！！！
+    </div>
+
+    <div class="cmt-list" v-else>
       <div class="cmt-item" v-for="(item, index) in comments" :key="index">
         <div class="cmt-info">
           <div class="user">
@@ -232,6 +236,15 @@ export default {
     }
   }
 
+  .no-comments{
+    width: 100%;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    color: #999;
+    border: 1px dashed #ddd;
+
+  }
   .cmt-list {
     border: 1px solid #ddd;
 
