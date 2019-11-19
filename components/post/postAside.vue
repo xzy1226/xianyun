@@ -18,7 +18,7 @@
         <ul>
           <li v-for="(item, index) in subCitiesList" :key="index">
             <nuxt-link :to="`/post?city=${item.city}`">
-              <i>{{index}}</i>
+              <i>{{index+1}}</i>
               <strong>{{item.city}}</strong>
               <span>{{item.desc}}</span>
             </nuxt-link>

@@ -36,7 +36,6 @@ export default {
   async mounted() {
     const { data } = (await this.$store.dispatch("getPostCity")).data;
     this.citiesList = data;
-    console.log(this.citiesList);
   }
 };
 </script>

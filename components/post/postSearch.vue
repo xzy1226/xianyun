@@ -20,16 +20,24 @@
 export default {
   data() {
     return {
-      searchText: "",
       recommendCities: ["广州", "上海", "北京"]
     };
   },
+  computed: {
+    searchText(){
+      const { city } = this.$route.query;
+      // 判断city 是否存在
+      if (city) return city;
+    }
+  },
   methods: {
+    // 点击搜索按钮，搜索数据
     handleSearchPost() {
       this.$router.replace(`/post?city=${this.searchText}`)
     },
+    // 点击推荐城市
     handleCity(val) {
-      this.searchText = val;
+      this.$router.replace(`/post?city=${val}`)
     }
   }
 };

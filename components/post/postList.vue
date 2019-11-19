@@ -2,6 +2,7 @@
   <div class="post-wrapper">
     <div v-if="total">
       <div v-for="(item, index) in postList" :key="index">
+        
         <!-- 左右布局， 只有一张图片 -->
         <el-row
           v-if="item.images.length==1"
@@ -122,10 +123,12 @@ export default {
     };
   },
   methods: {
+    // 改变每页页数
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.pageSize = val;
     },
+    // 当前页码
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.pageIndex = val;
@@ -139,8 +142,9 @@ export default {
       // 要发送请求的参数
       let params = {
         _start: (this.pageIndex - 1) * this.pageSize,
-        _limit: this.pageSize
+        _limit: this.pageSize 
       };
+
       // 判断city 是否存在
       if (city) params.city = city;
 
