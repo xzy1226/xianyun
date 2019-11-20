@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import moment from "moment";
 
 export default {
   name: "floor",
@@ -62,12 +61,6 @@ export default {
     handleReply(id, nickname) {
       // 向父组件传递
       this.$emit("handleReply", id, nickname);
-    }
-  },
-  filters: {
-    // 过滤时间格式
-    formatTime(val) {
-      return moment(val).format("YYYY-MM-DD hh:mm");
     }
   }
 };

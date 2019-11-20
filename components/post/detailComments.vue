@@ -127,7 +127,7 @@ export default {
       this.handleGetComments()
     },
 
-    // 当前文章的评论
+    // 获取当前文章的评论
     async handleGetComments() {
       // 要请求评论的参数
       let params = {

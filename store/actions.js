@@ -146,4 +146,19 @@ export default {
       }
     })
   },
+
+  // 查找城市
+  async getSearchCities({commit},data){
+    return this.$axios('/cities?name=南京')
+  },
+
+  // 酒店选项
+  async getHotelOption({commit}){
+    return this.$axios('/hotels/options')
+  },
+
+  // 酒店
+  async getHotelList({commit},data){
+    return this.$axios('/hotels'+data)
+  }
 }
