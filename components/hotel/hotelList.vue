@@ -4,14 +4,14 @@
       <el-row type="flex" class="hotel-item" v-for="(item, index) in hotelData" :key="index">
         <el-col :span="8">
           <span class="img-wrapper">
-            <nuxt-link to="">
+            <nuxt-link :to="`/hotel/detail?id=${item.id}`">
               <img :src="item.photos" alt="" srcset="">
             </nuxt-link>
           </span>
         </el-col>
         <el-col :span="10" class="hotel-info">
           <h4 class="hotel-title">
-            <nuxt-link to="">{{item.name}}</nuxt-link>
+            <nuxt-link :to="`/hotel/detail?id=${item.id}`">{{item.name}}</nuxt-link>
           </h4>
           <div class="hotel-cm-name">
             <span>{{item.alias}}</span>
@@ -71,12 +71,6 @@
 
 <script>
 export default {
-  props: {
-    data:{
-      type: Array,
-      default: []
-    }
-  },
   data() {
     return {
       hotelData: []
@@ -84,27 +78,8 @@ export default {
   },
   methods: {
     async getHotelData(){
-      let str = '?';
-      const arr=[...new Set(this.data)]
-      arr.forEach(el => {
-        // str += `${key}=${el[key]}&`;
-        str+=`${el}&`
-      });
-      
-      // var obj = {};
-      // const arr = this.data.reduce((item, next)=> {
-      //  obj[next.key] ? '' : obj[next.key] = true && item.push(next);
-      //  return item;
-      // }, []);
-      // console.log(arr);
-      // arr.forEach(el => {
-      //   for (const key in el) {
-      //       str += `${key}=${el[key]}&`;
-      //   }
-      // });
-      
-      console.log(str);
-      const res=await this.$store.dispatch('getHotelList',str.slice(0, -1))
+      let params=this.$route.fullPath.slice(6);
+      const res=await this.$store.dispatch('getHotelList',params)
       this.hotelData=res.data.data
     },
   },

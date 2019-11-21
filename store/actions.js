@@ -157,7 +157,7 @@ export default {
     return this.$axios('/hotels/options')
   },
 
-  // 酒店
+  // 酒店详情
   async getHotelList({commit},data){
     return this.$axios('/hotels'+data)
   }

@@ -152,7 +152,7 @@
             <el-col :span="24">住宿等级</el-col>
           </el-row>
           <el-row type="flex">
-            <el-select v-model="hotellevel_in" size="mini" multiple placeholder="请选择">
+            <el-select v-model="hotellevel_in" @change="handleLevel" @remove-tag="handleRemove" size="mini" multiple placeholder="请选择">
               <el-option
                 v-for="item in options.levels"
                 :key="item.id"
@@ -167,7 +167,7 @@
             <el-col :span="24">住宿类型</el-col>
           </el-row>
           <el-row type="flex">
-            <el-select v-model="hoteltypes_in" size="mini" multiple placeholder="请选择">
+            <el-select v-model="hoteltypes_in" @change="handletypes" @remove-tag="handleRemove" size="mini" multiple placeholder="请选择">
               <el-option
                 v-for="item in options.types"
                 :key="item.id"
@@ -182,7 +182,7 @@
             <el-col :span="24">酒店设施</el-col>
           </el-row>
           <el-row type="flex">
-            <el-select v-model="hotelassets_in" size="mini" multiple placeholder="请选择">
+            <el-select v-model="hotelassets_in" @change="handleAssets" @remove-tag="handleRemove" size="mini" multiple placeholder="请选择">
               <el-option
                 v-for="item in options.assets"
                 :key="item.id"
@@ -197,7 +197,7 @@
             <el-col :span="24">酒店品牌</el-col>
           </el-row>
           <el-row type="flex">
-            <el-select v-model="hotelbrands_in" size="mini" multiple placeholder="请选择">
+            <el-select v-model="hotelbrands_in" @change="handlebrands" @remove-tag="handleRemove" size="mini" multiple placeholder="请选择">
               <el-option
                 v-for="item in options.brands"
                 :key="item.id"
@@ -211,9 +211,8 @@
     </div>
 
     <!-- 酒店列表 -->
-    <HotelList :data="params"/>
+    <HotelList />
 
-    <input type="hidden" v-model="handleHotel">
   </section>
 </template>
 
@@ -239,12 +238,11 @@ export default {
       
       enterTime: '',  //入店时间
       leftTime: '',   //离店时间
-
+      price: 0,
+      price_lt: 0,  // 价格
+      scenic: '',   // 景点id
       pageSize: 5,  // 页数
       pageIndex: 1, // 页码
-      price: 0,
-      price_lt: 0,      // 价格
-      scenic: '',   // 景点id
       params: [],   // 获取酒店详情的参数
       scenics: [], // 沿线
       // 酒店选项
@@ -254,47 +252,8 @@ export default {
         assets: [],   // 酒店设施
         brands: []    // 酒店品牌
       },
-      hidden: true,
+      hidden: true, // 区域状态
     };
-  },
-  computed: {
-    handleHotel() {
-      
-      this.city && this.params.push(`city=${this.city}`);
-      this.enterTime && this.params.push(`enterTime=${this.enterTime}`);
-      this.leftTime && this.params.push(`leftTime=${this.leftTime}`);
-
-      if(this.hotellevel_in!=0){
-        
-        this.hotellevel_in.forEach(el => {
-
-          this.params.push(`hotellevel_in=${el}`)
-        });
-      }
-      if(this.hoteltypes_in!=0)this.hoteltypes_in.forEach(el => this.params.push(`hoteltypes_in=${el}`));
-      if(this.hotelassets_in!=0)this.hotelassets_in.forEach(el => this.params.push(`hotelassets_in=${el}`));
-      if(this.hotelbrands_in!=0)this.hotelbrands_in.forEach(el => this.params.push(`hotelbrands_in=${el}`));
-
-      this.price_lt && this.params.forEach((el,i)=>{
-        if(el.includes('price_lt')){
-          this.params.splice(i,1,`price_lt=${this.price_lt}`)
-        }else{
-          this.params.push(`price_lt=${this.price_lt}`)
-        }
-      })
-
-      this.scenic && this.params.forEach((el,i)=>{
-        if(el.includes('scenic')){
-          this.params.splice(i,1,`scenic=${this.scenic}`)
-        }else{
-          this.params.push(`scenic=${this.scenic}`)
-        }
-      })
-      
-
-      console.log(this.params);
-      return this.params;
-    },
   },
   methods: {
     handleSubmit(){
@@ -303,20 +262,84 @@ export default {
       this.enterTime=timeArr[0];
       this.leftTime=timeArr[1];
       this.city=this.form.id
-      console.log(this.city,this.enterTime,this.leftTime);
 
-      this.$router.replace({
-        path: '/hotel',
-        query: {
-          city: this.city,
-          enterTime: this.enterTime,
-          leftTime: this.leftTime
-        }
+      this.city && this.params.push(`city=${this.city}`);
+
+      this.params.forEach((el,i)=>{
+        el.includes('enterTime')
+        ?this.params.splice(i,1,`enterTime=${this.enterTime}`)
+        :this.params.push(`enterTime=${this.enterTime}`)
       })
+
+      this.params.forEach((el,i)=>{
+        el.includes('leftTime')
+        ?this.params.splice(i,1,`leftTime=${this.leftTime}`)
+        :this.params.push(`leftTime=${this.leftTime}`)
+      })
+
+      this.handlePath()
     },
+    // 解析路径
+    handlePath(){
+      let str = '?';
+      const arr=[...new Set(this.params)]
+      arr.forEach(el => {
+        str+=`${el}&`
+      });
+      str=str.slice(0,-1)
+      this.$router.replace({
+        path: '/hotel'+str||'',
+      })
+
+    },
+    handleLevel(val){
+      this.params=this.params.filter(el=>{
+        if(!el.includes('hotellevel'))return el
+      })
+      val.forEach(el => this.params.push(`hotellevel=${el}`));
+      this.handlePath()
+    },
+    handletypes(val){
+      this.params=this.params.filter(el=>{
+        if(!el.includes('hoteltype'))return el
+      })
+      val.forEach(el => this.params.push(`hoteltype=${el}`));
+      this.handlePath()
+    },
+    handleAssets(val){
+      this.params=this.params.filter(el=>{
+        if(!el.includes('hotelasset'))return el
+      })
+      val.forEach(el => this.params.push(`hotelasset=${el}`));
+      this.handlePath()
+    },
+    handlebrands(val){
+      this.params=this.params.filter(el=>{
+        if(!el.includes('hotelbrand'))return el
+      })
+      val.forEach(el => this.params.push(`hotelbrand=${el}`));
+      this.handlePath()
+    },
+    handleRemove(val){},
     // 价格改变，鼠标释放后获取值
     handleChange(val){
       this.price_lt=val;
+      this.params.forEach((el,i)=>{
+        el.includes('price_lt')
+        ? this.params.splice(i,1,`price_lt=${this.price_lt}`)
+        : this.params.push(`price_lt=${this.price_lt}`);
+      })
+      this.handlePath()
+    },
+    // 区域地 激活
+    handleBudget(val) {
+      this.scenic = val.id;
+      this.params.forEach((el,i)=>{
+        el.includes('scenic')
+        ? this.params.splice(i,1,`scenic=${this.scenic}`)
+        : this.params.push(`scenic=${this.scenic}`)
+      })
+      this.handlePath()
     },
     // 选择城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
@@ -361,11 +384,6 @@ export default {
       this.form.city = item.value;
       this.form.id=item.id;
     },
-
-    // 区域地 激活
-    handleBudget(val) {
-      this.scenic = val.id;
-    }
   },
   async mounted() {
     // 获取查找城市区域
@@ -374,7 +392,6 @@ export default {
     // 获取城市id
     this.city=this.scenics[0].city;
 
-    // this.params.push({city:this.city});
     this.params.push(`city=${this.city}`)
 
     // 获取酒店选项数据
