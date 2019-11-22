@@ -158,11 +158,11 @@ export default {
   },
 
   // 酒店详情
-  async getHotelList({commit},data){
-    return this.$axios('/hotels'+data)
+  async getHotelList({commit},url){
+    return this.$axios('/hotels'+url)
   },
 
-  // 
+  // 酒店评论
   async getHotelComment({commit},data){
     return this.$axios('/hotels/comments',data)
   }

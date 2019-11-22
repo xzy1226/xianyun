@@ -27,9 +27,46 @@
       </el-form-item>
 
       <el-form-item>
-        <el-input placeholder="人数未定" v-model="form.person">
-          <i slot="suffix" class="el-input__icon el-icon-user"></i>
+        <el-input placeholder="人数未定" v-model="form.person" v-popover:popover :readonly="true">
+            <i slot="suffix" class="el-input__icon el-icon-user"></i>
         </el-input>
+        <el-popover
+          placement="bottom-start"
+          ref="popover"
+          width="300"
+          v-model="visible"
+          trigger="click">
+          <el-row type="flex" align="middle" justify="space-bewteen" class="input-popover">
+            <el-col :span="8">每间</el-col>
+            <el-col :span="8">
+              <el-select v-model="person" placeholder="成人" size="mini" @change="person='成人'+person">
+                <el-option
+                  v-for="item in [1,2,3,4,5,6]"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="8">
+              <el-select v-model="children" placeholder="儿童" size="mini" @change="children='儿童'+children">
+                <el-option
+                  v-for="item in [0,1,2,3,4,5]"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+          <el-divider></el-divider>
+          <el-row type="flex"  justify="end">
+            <el-col :span="5">
+              <el-button type="primary" size="mini" @click="handlePerson">确定</el-button>
+            </el-col>
+            
+          </el-row>
+        </el-popover>
       </el-form-item>
 
       <el-form-item>
@@ -37,6 +74,7 @@
       </el-form-item>
     </el-form>
 
+    <!-- 地图区域 -->
     <el-row type="flex" justify="space-between" class="hotel-option">
       <el-col :span="14">
         <div class="search-option">
@@ -47,8 +85,8 @@
                 <a
                   href="#"
                   class="location-budget"
-                  :class="{active:scenic===''}"
-                  @click="handleBudget()"
+                  :class="{active:scenic==''}"
+                  @click="handleBudget('')"
                 >全部</a>
                 <a
                   class="location-budget"
@@ -224,15 +262,18 @@ export default {
   components: {HotelList},
   data() {
     return {
+      visible: false,
+      person: '成人1',
+      children: ' 儿童0',
       form: {
         city: "",
         id: '',
-        date: "",
+        date: [],
         person: "",
       },
       city: 74,     // 城市id
       hotellevel_in: [],   // 酒店等级
-      hoteltypes_in: [],    // 酒店设施
+      hoteltypes_in: [],    // 酒店类型
       hotelassets_in: [],   // 酒店设施
       hotelbrands_in: [],    // 酒店品牌
       
@@ -256,42 +297,38 @@ export default {
     };
   },
   methods: {
-    handleSubmit(){
-      // 处理入店时间，离店时间
-      const timeArr=this.form.date.map(el => moment(el).format("YYYY-MM-DD"));
-      this.enterTime=timeArr[0];
-      this.leftTime=timeArr[1];
-      this.city=this.form.id
-
-      this.city && this.params.push(`city=${this.city}`);
-
-      this.params.forEach((el,i)=>{
-        el.includes('enterTime')
-        ?this.params.splice(i,1,`enterTime=${this.enterTime}`)
-        :this.params.push(`enterTime=${this.enterTime}`)
-      })
-
-      this.params.forEach((el,i)=>{
-        el.includes('leftTime')
-        ?this.params.splice(i,1,`leftTime=${this.leftTime}`)
-        :this.params.push(`leftTime=${this.leftTime}`)
-      })
-
-      this.handlePath()
-    },
     // 解析路径
     handlePath(){
       let str = '?';
-      const arr=[...new Set(this.params)]
-      arr.forEach(el => {
-        str+=`${el}&`
-      });
-      str=str.slice(0,-1)
+      [...new Set(this.params)].forEach(el => str+=`${el}&`);
       this.$router.replace({
-        path: '/hotel'+str||'',
+        path: '/hotel'+ str.slice(0,-1) || '',
       })
-
     },
+    // 判断人数
+    handlePerson(){
+      this.visible=false;
+ 
+      this.form.person=this.children.includes('0')?this.person:this.person+this.children;
+    },
+    // 提交
+    handleSubmit(){
+      // 处理入店时间，离店时间
+      if(this.form.date){
+        const timeArr=this.form.date.map(el => moment(el).format("YYYY-MM-DD"));
+        this.enterTime=timeArr[0];
+        this.leftTime=timeArr[1];
+      }
+      // 处理this.city值可能不存在的状态 
+      this.city=this.form.id||this.city
+
+      this.handleFor('city',this.city)
+      this.handleFor('enterTime',this.enterTime)
+      this.handleFor('leftTime',this.leftTime)
+
+      this.handlePath()
+    },
+    // 筛选酒店等级、设施、类型、品牌
     handleLevel(val){
       this.params=this.params.filter(el=>{
         if(!el.includes('hotellevel'))return el
@@ -324,23 +361,31 @@ export default {
     // 价格改变，鼠标释放后获取值
     handleChange(val){
       this.price_lt=val;
-      this.params.forEach((el,i)=>{
-        el.includes('price_lt')
-        ? this.params.splice(i,1,`price_lt=${this.price_lt}`)
-        : this.params.push(`price_lt=${this.price_lt}`);
-      })
+      this.handleFor('price_lt',this.price_lt)
+
       this.handlePath()
     },
     // 区域地 激活
     handleBudget(val) {
-      this.scenic = val.id;
-      this.params.forEach((el,i)=>{
-        el.includes('scenic')
-        ? this.params.splice(i,1,`scenic=${this.scenic}`)
-        : this.params.push(`scenic=${this.scenic}`)
-      })
+      this.scenic = val.id || '';
+
+      this.handleFor('scenic',this.scenic)
+
       this.handlePath()
     },
+    // 用于筛选重复的参数
+    handleFor(name,val){
+      this.params.forEach((el,i)=>{
+        if(val){
+          el.includes(name)
+          ? this.params.splice(i,1,`${name}=${val}`)
+          : this.params.push(`${name}=${val}`)
+        }else{
+          if(el.includes(name))this.params.splice(i,1)
+        }
+      })
+    },
+
     // 选择城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     async queryCitySearch(value, cb) {
@@ -393,7 +438,7 @@ export default {
     this.city=this.scenics[0].city;
 
     this.params.push(`city=${this.city}`)
-
+    this.handlePath()
     // 获取酒店选项数据
     const res= await this.$store.dispatch("getHotelOption")
     this.options=res.data.data;
@@ -442,6 +487,12 @@ export default {
 
   /deep/.el-range-separator {
     width: 10%;
+  }
+
+  /deep/.input-popover{
+    padding: 10px 0 20px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
   }
 
   .hotel-option {
