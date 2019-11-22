@@ -13,6 +13,7 @@
         @click="handleCity(item)"
       >{{item}}</span>
     </div>
+    <input type="hidden" v-model="text">
   </div>
 </template>
 
@@ -20,14 +21,16 @@
 export default {
   data() {
     return {
-      recommendCities: ["广州", "上海", "北京"]
+      recommendCities: ["广州", "上海", "北京"],
+      searchText: ''
     };
   },
   computed: {
-    searchText(){
+    text(){
       const { city } = this.$route.query;
       // 判断city 是否存在
-      if (city) return city;
+      if (city) this.searchText=city;
+      return city;
     }
   },
   methods: {
