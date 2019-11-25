@@ -76,7 +76,8 @@
           <el-row>
             <el-col :span="6">入住时间：14:00之后</el-col>
             <el-col :span="6">离店时间：12:00之前</el-col>
-            <el-col :span="6">{{hotelData.creation_time}}/{{hotelData.renovat_time}}</el-col>
+            <el-col :span="6" v-if="hotelData.creation_time==null">{{hotelData.creation_time}}/{{hotelData.renovat_time}}</el-col>
+            <el-col :span="6" v-else>2010装修/2012开业</el-col>
             <el-col :span="6">酒店规模：{{hotelData.roomCount}}间客房</el-col>
           </el-row>
         </el-col>
@@ -85,7 +86,7 @@
         <el-col class="assets-info-hd" :span="4">主要设施</el-col>
         <el-col class="assets-info-bd" :span="20">
           <el-row v-if="hotelData.hotelassets.length>0">
-            <el-tag v-for="(item, index) in hotelData.hotelassets" :key="index" type="info" style="margin-right:10px;">item.name</el-tag>
+            <el-tag v-for="(item, index) in hotelData.hotelassets" :key="index" type="info" style="margin-right:10px;">{{item.name}}</el-tag>
           </el-row>
           <el-row v-else>
             <el-tag type="info" style="margin-right:10px;">外币兑换服务</el-tag>
@@ -187,7 +188,8 @@ export default {
         '/img/5.jpeg',
         '/img/6.jpeg',
       ],
-      pic: '/img/1.jpeg'
+      pic: '/img/1.jpeg',
+      map: null
     }
   },
   methods: {
@@ -228,8 +230,12 @@ export default {
       map.add([marker1]);
     };
 
-    const url =
-      "https://webapi.amap.com/maps?v=1.4.15&key=7389d567cb5e257d1bcf274de61d1e00&callback=onLoad";
+    // "https://webapi.amap.com/maps?v=1.4.15&key=7389d567cb5e257d1bcf274de61d1e00&callback=onLoad";
+    
+    // const url =
+    //   "https://m.amap.com/around/?locations=116.470098,39.992838&keywords=风景,交通&defaultIndex=3&defaultView=list&searchRadius=5000&key=7389d567cb5e257d1bcf274de61d1e00";
+    const url="https://webapi.amap.com/maps?v=1.4.15&key=7389d567cb5e257d1bcf274de61d1e00&callback=onLoad";
+      
     let jsapi = document.createElement("script");
     jsapi.charset = "utf-8";
     jsapi.src = url;

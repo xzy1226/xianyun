@@ -84,6 +84,9 @@ export default {
       const {...data}=this.form
       // 删除不用的参数-时间
       delete data.date
+
+      //  提示信息
+      if(!this.form.title) return this.$message.warning('标题不能为空');
       
       // 发送请求，得到返回结果
       const {data: {message}}=await this.$store.dispatch('postAddPost',{data,token})

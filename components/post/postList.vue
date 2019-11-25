@@ -5,7 +5,7 @@
         
         <!-- 左右布局， 只有一张图片 -->
         <el-row
-          v-if="item.images.length==1"
+          v-if="item.images.length==1||item.images.length==0"
           type="flex"
           align="middle"
           justify="space-between"
@@ -13,7 +13,8 @@
         >
           <div class="cover">
             <nuxt-link :to="`/post/detail?id=${item.id}`">
-              <img :src="item.images[0]" alt srcset />
+              <img :src="item.images[0]" alt srcset v-if="item.images.length>0"/>
+              <img src="/img/pic_sea.jpeg" alt srcset v-else/>
             </nuxt-link>
           </div>
           <div class="post-content">

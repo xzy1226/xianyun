@@ -47,7 +47,7 @@
           <div class="cmt-new">
             
             <!-- 父评论列表组件 -->
-            <FloorComment v-if="item.follow" :commentPar="item.parent" :count="item.parentCount-1" @handleReply="handleReply"/>
+            <FloorComment v-if="item.parent" :commentPar="item.parent" :count="item.parentCount-1" @handleReply="handleReply"/>
 
             <p class="cmt-message">{{item.content}}</p>
             <el-row type="flex" justify="flex-start" v-if="item.pics.length>0&&item.pics[0]">
@@ -56,7 +56,7 @@
               </div>
             </el-row>
             <div class="cmt-ctrl" @mouseover="isReply(index)" @mouseleave="replyActive=''">
-              <a v-if="replyActive===index" href="javascript:;" @click="handleReply(item.id,item.account.nickname)">回复</a>
+              <a v-if="replyActive===index" href="javascript:;" @click="handleReply({id:item.id,nickname:item.account.nickname})">回复</a>
             </div>
           </div>
         </div>
@@ -150,6 +150,9 @@ export default {
 
     // 提交评论按钮
     async handleSubmit() {
+      if(this.commentText=='') return this.$message.warning('评论内容不能为空');
+
+      
       // 获取token
       const {userInfo: { token }} = this.$store.state;
 
@@ -172,6 +175,7 @@ export default {
       this.$refs.upload.clearFiles();
       this.commentText=''
       this.tag.name=''
+      this.pics=[]
 
       // 调用当前文章的评论方法
       this.handleGetComments()
@@ -183,9 +187,10 @@ export default {
     },
 
     // 点击回复，id 为要回复的用户id,nickname 为用户名
-    handleReply(id,nickname){
-      this.tag.name='@'+nickname;
-      this.follow=id;
+    handleReply(data){
+      console.log(data);
+      this.tag.name='@'+data.nickname;
+      this.follow=data.id;
       // 获取文本域焦点
       this.$refs.input.focus()
     },
@@ -197,7 +202,7 @@ export default {
 
     //统计子评论数，通过递归查询
     getParentLen(i,item){
-      return item.follow ? this.getParentLen(i+1,item.parent) : i;
+      return item.parent ? this.getParentLen(i+1,item.parent) : i;
     },
 
   },

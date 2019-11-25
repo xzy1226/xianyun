@@ -12,6 +12,7 @@
           :fetch-suggestions="queryCitySearch"
           @select="handleCitySelect"
           class="el-autocomplete"
+          placeholder="请选择城市"
           v-model="form.city"
         ></el-autocomplete>
       </el-form-item>
@@ -190,7 +191,7 @@
             <el-col :span="24">住宿等级</el-col>
           </el-row>
           <el-row type="flex">
-            <el-select v-model="hotellevel_in" @change="handleLevel" @remove-tag="handleRemove" size="mini" multiple placeholder="请选择">
+            <el-select v-model="hotellevel_in" @change="handleLevel" @remove-tag="handleRemove" size="mini" collapse-tags multiple placeholder="请选择">
               <el-option
                 v-for="item in options.levels"
                 :key="item.id"
@@ -205,7 +206,7 @@
             <el-col :span="24">住宿类型</el-col>
           </el-row>
           <el-row type="flex">
-            <el-select v-model="hoteltypes_in" @change="handletypes" @remove-tag="handleRemove" size="mini" multiple placeholder="请选择">
+            <el-select v-model="hoteltypes_in" @change="handletypes" @remove-tag="handleRemove" size="mini" collapse-tags multiple placeholder="请选择">
               <el-option
                 v-for="item in options.types"
                 :key="item.id"
@@ -220,7 +221,7 @@
             <el-col :span="24">酒店设施</el-col>
           </el-row>
           <el-row type="flex">
-            <el-select v-model="hotelassets_in" @change="handleAssets" @remove-tag="handleRemove" size="mini" multiple placeholder="请选择">
+            <el-select v-model="hotelassets_in" @change="handleAssets" @remove-tag="handleRemove" size="mini" collapse-tags multiple placeholder="请选择">
               <el-option
                 v-for="item in options.assets"
                 :key="item.id"
@@ -235,7 +236,7 @@
             <el-col :span="24">酒店品牌</el-col>
           </el-row>
           <el-row type="flex">
-            <el-select v-model="hotelbrands_in" @change="handlebrands" @remove-tag="handleRemove" size="mini" multiple placeholder="请选择">
+            <el-select v-model="hotelbrands_in" @change="handlebrands" @remove-tag="handleRemove" size="mini" collapse-tags multiple placeholder="请选择">
               <el-option
                 v-for="item in options.brands"
                 :key="item.id"
@@ -318,6 +319,9 @@ export default {
         const timeArr=this.form.date.map(el => moment(el).format("YYYY-MM-DD"));
         this.enterTime=timeArr[0];
         this.leftTime=timeArr[1];
+      }else{
+        this.enterTime='';
+        this.leftTime='';
       }
       // 处理this.city值可能不存在的状态 
       this.city=this.form.id||this.city
@@ -375,13 +379,14 @@ export default {
     },
     // 用于筛选重复的参数
     handleFor(name,val){
+      this.params=[...new Set(this.params)]
       this.params.forEach((el,i)=>{
         if(val){
           el.includes(name)
           ? this.params.splice(i,1,`${name}=${val}`)
           : this.params.push(`${name}=${val}`)
         }else{
-          if(el.includes(name))this.params.splice(i,1)
+          if(el.includes(name))this.params.splice(i,1);
         }
       })
     },

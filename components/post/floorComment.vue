@@ -33,7 +33,7 @@
             <a
               v-if="replyActive==commentPar.id"
               href="javascript:;"
-              @click="handleReply(commentPar.id,commentPar.account.nickname)"
+              @click="handleReply({id:commentPar.id,nickname:commentPar.account.nickname})"
             >回复</a>
           </div>
         </div>
@@ -58,9 +58,13 @@ export default {
       this.replyActive = val;
     },
     // 点击回复, 子评论回复 要一层一层往外传
-    handleReply(id, nickname) {
+    handleReply(data) {
       // 向父组件传递
-      this.$emit("handleReply", id, nickname);
+      // this.$emit("handleReply", id, nickname);
+      this.$emit('handleReply', data.id?data:{
+        id: this.commentPar.id,
+        name: this.commentPar.account.nickname,
+      })
     }
   }
 };
